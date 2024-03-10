@@ -10,4 +10,10 @@ class AuthenticationClientTest {
         val credential = runBlocking { AuthenticationClient.clientCredentialsGrantFlow() }
         println("Your App Credential is: $credential")
     }
+
+    @Test
+    fun deviceCodeGrantFlow() {
+        val code = runBlocking { AuthenticationClient.deviceCodeGrantFlow() }
+        println("Your Device Code is: $code")
+    }
 }

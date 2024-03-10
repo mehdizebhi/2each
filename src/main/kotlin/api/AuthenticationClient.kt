@@ -9,6 +9,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import model.DeviceCredential
 import util.AppProperties
 
 object AuthenticationClient {
@@ -40,5 +41,19 @@ object AuthenticationClient {
         }
     }
 
+    suspend fun deviceCodeGrantFlow(): DeviceCredential {
+        val response: HttpResponse = client.submitForm(
+            url = "$baseUrl/oauth2/device",
+            formParameters = parameters {
+                append("client_id", clientId)
+                append("client_secret", clientSecret)
+            }
+        )
 
+        if (response.status.value in 200..299) {
+            return response.body()
+        } else {
+            throw RuntimeException("There is a problem to call $baseUrl/oauth2/device. Status code: ${response.status.value}.")
+        }
+    }
 }
