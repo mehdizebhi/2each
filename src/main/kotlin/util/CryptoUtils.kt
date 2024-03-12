@@ -7,6 +7,7 @@ import java.security.KeyFactory
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.spec.PKCS8EncodedKeySpec
+import java.security.spec.X509EncodedKeySpec
 import java.util.Base64
 import javax.crypto.Cipher
 
@@ -39,8 +40,15 @@ object CryptoUtils {
         }
     }
 
+    fun readPublicKeyFromFile(filePath: String): Key {
+        val keyPairString = Files.readString(Path.of(filePath))
+        val publicKeyStr = keyPairString.substring(0, keyPairString.indexOf("\n"))
+        return decodePublicKey(publicKeyStr)
+    }
+
     fun readPrivateKeyFromFile(filePath: String): Key {
-        val privateKeyStr = Files.readString(Path.of(filePath))
+        val keyPairString = Files.readString(Path.of(filePath))
+        val privateKeyStr = keyPairString.substring(keyPairString.indexOf("\n") + 1)
         return decodePrivateKey(privateKeyStr)
     }
 
@@ -61,5 +69,10 @@ object CryptoUtils {
     private fun decodePrivateKey(privateKeyStr: String): Key {
         val privateKeyBytes = Base64.getDecoder().decode(privateKeyStr)
         return KeyFactory.getInstance(ALGORITHM).generatePrivate(PKCS8EncodedKeySpec(privateKeyBytes))
+    }
+
+    private fun decodePublicKey(publicKeyStr: String): Key {
+        val publicKeyBytes = Base64.getDecoder().decode(publicKeyStr)
+        return KeyFactory.getInstance(ALGORITHM).generatePublic(X509EncodedKeySpec(publicKeyBytes))
     }
 }
