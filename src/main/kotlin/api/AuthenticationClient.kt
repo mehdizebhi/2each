@@ -3,6 +3,7 @@ package api
 import exception.AuthorizationPendingException
 import exception.InvalidDeviceCodeException
 import exception.InvalidRefreshToken
+import exception.UnauthorizedException
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
@@ -107,6 +108,9 @@ object AuthenticationClient {
             }
             400 -> {
                 throw InvalidRefreshToken("Invalid refresh token")
+            }
+            401 -> {
+                throw UnauthorizedException("Refresh token expired")
             }
             else -> {
                 throw RuntimeException("There is a problem to call $baseUrl/oauth2/token. Status code: ${response.status.value}.")
