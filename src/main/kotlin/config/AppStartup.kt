@@ -1,9 +1,11 @@
 package config
 
-class AppStartup {
+import util.CryptoUtils
+
+object AppStartup {
 
     fun init() {
-
+        CryptoUtils.generateAndSaveKeyPair()
     }
 
     // -------------------------------
