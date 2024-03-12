@@ -43,7 +43,7 @@ object CryptoUtils {
         }
     }
 
-    fun readPublicKeyFromFile(): Key {
+    private fun readPublicKeyFromFile(): Key {
         val keyPairString = Files.readString(Path.of(PATH))
         val publicKeyStr = keyPairString.substring(0, keyPairString.indexOf("\n"))
         return decodePublicKey(publicKeyStr)
