@@ -95,7 +95,7 @@ object AuthenticationClient {
         }
     }
 
-    suspend fun refreshAccessToken(refreshToken: String): RefreshAuthenticationToken {
+    suspend fun fetchRefreshAccessToken(refreshToken: String): RefreshAuthenticationToken {
         val response: HttpResponse = client.post("$baseUrl/oauth2/token") {
             contentType(ContentType.Application.FormUrlEncoded)
             setBody("grant_type=refresh_token&refresh_token=$refreshToken&client_id=$clientId&client_secret=$clientSecret")
