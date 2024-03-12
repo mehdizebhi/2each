@@ -14,15 +14,18 @@ import javax.crypto.Cipher
 object CryptoUtils {
     private const val ALGORITHM = "RSA"
     private const val TRANSFORMATION = "RSA/ECB/PKCS1Padding"
+    private const val PATH = "keypair.txt"
 
-    fun encrypt(data: String, publicKey: Key): String {
+    fun encrypt(data: String): String {
+        val publicKey = readPublicKeyFromFile()
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.ENCRYPT_MODE, publicKey)
         val encryptedBytes = cipher.doFinal(data.toByteArray())
         return Base64.getEncoder().encodeToString(encryptedBytes)
     }
 
-    fun decrypt(encryptedData: String, privateKey: Key): String {
+    fun decrypt(encryptedData: String): String {
+        val privateKey = readPrivateKeyFromFile()
         val cipher = Cipher.getInstance(TRANSFORMATION)
         cipher.init(Cipher.DECRYPT_MODE, privateKey)
         val encryptedBytes = Base64.getDecoder().decode(encryptedData)
@@ -30,24 +33,24 @@ object CryptoUtils {
         return String(decryptedBytes)
     }
 
-    fun generateAndSaveKeyPair(filePath: String) {
+    fun generateAndSaveKeyPair() {
         val keyPair = generateKeyPair()
 
         // Check if the file exists
-        if (!Files.exists(Path.of(filePath))) {
+        if (!Files.exists(Path.of(PATH))) {
             // If the file doesn't exist, generate a new key pair and save it to the file
-            saveKeyPairToFile(keyPair, filePath)
+            saveKeyPairToFile(keyPair)
         }
     }
 
-    fun readPublicKeyFromFile(filePath: String): Key {
-        val keyPairString = Files.readString(Path.of(filePath))
+    fun readPublicKeyFromFile(): Key {
+        val keyPairString = Files.readString(Path.of(PATH))
         val publicKeyStr = keyPairString.substring(0, keyPairString.indexOf("\n"))
         return decodePublicKey(publicKeyStr)
     }
 
-    fun readPrivateKeyFromFile(filePath: String): Key {
-        val keyPairString = Files.readString(Path.of(filePath))
+    private fun readPrivateKeyFromFile(): Key {
+        val keyPairString = Files.readString(Path.of(PATH))
         val privateKeyStr = keyPairString.substring(keyPairString.indexOf("\n") + 1)
         return decodePrivateKey(privateKeyStr)
     }
@@ -58,12 +61,12 @@ object CryptoUtils {
         return keyPairGenerator.generateKeyPair()
     }
 
-    private fun saveKeyPairToFile(keyPair: KeyPair, filePath: String) {
+    private fun saveKeyPairToFile(keyPair: KeyPair) {
         val publicKeyStr = Base64.getEncoder().encodeToString(keyPair.public.encoded)
         val privateKeyStr = Base64.getEncoder().encodeToString(keyPair.private.encoded)
 
         val keyPairString = "$publicKeyStr\n$privateKeyStr"
-        Files.write(Path.of(filePath), keyPairString.toByteArray())
+        Files.write(Path.of(PATH), keyPairString.toByteArray())
     }
 
     private fun decodePrivateKey(privateKeyStr: String): Key {
