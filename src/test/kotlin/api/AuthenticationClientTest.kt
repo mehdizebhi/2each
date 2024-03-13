@@ -25,7 +25,7 @@ class AuthenticationClientTest {
         val token = runBlocking { AuthenticationClient.fetchOAuthTokenByDeviceCode("deviceCode") }
 
         val encryptedAccessToken = CryptoUtils.encrypt(token.accessToken)
-        val encryptedRefreshToken = CryptoUtils.encrypt(token.accessToken)
+        val encryptedRefreshToken = CryptoUtils.encrypt(token.refreshToken)
         val tokenPairString = "$encryptedAccessToken\n$encryptedRefreshToken"
         Files.write(Path.of("tokenpairTest.txt"), tokenPairString.toByteArray())
     }
