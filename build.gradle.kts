@@ -25,11 +25,17 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
+    implementation("io.ktor:ktor-server-core:$ktor_version")
+    implementation("io.ktor:ktor-server-netty:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("io.ktor:ktor-client-cio-jvm:2.3.9")
+    implementation("com.github.twitch4j:twitch4j:1.22.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.0")
 
     testImplementation(kotlin("test"))
 }
